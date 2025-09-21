@@ -1,0 +1,21 @@
+{
+  "services": {
+    "devcontainer": {
+      "image": "mcr.microsoft.com/devcontainers/python:3.13",
+      "volumes": [
+        "../..:/workspaces:cached",
+        "deploy-app:/workspaces/deploy"
+      ],
+      "networks": ["dev"],
+      "command": "sleep infinity",
+      "extra_hosts": [
+        "host.docker.internal:host-gateway"
+      ]
+    }
+  },
+  "volumes": {
+    "deploy-app": {
+      "driver": "local"
+    }
+  }  
+}

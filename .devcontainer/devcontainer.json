@@ -1,0 +1,46 @@
+{
+	"name": "Bookkeeping Development Environment",
+	"image": "mcr.microsoft.com/devcontainers/python:3.11",
+	
+	"mounts": [
+		"source=C:\\Users\\james\\Digital Storage\\Personal - Documents\\Financials\\AI Bookkeeping,target=/workspace/data,type=bind"
+	],
+	
+	"features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/devcontainers/features/github-cli:1": {}
+	},
+	
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-python.debugpy",
+				"ms-toolsai.jupyter",
+				"ms-vscode.vscode-json"
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "/usr/local/bin/python"
+			}
+		}
+	},
+	
+	"postCreateCommand": "pip install -r requirements.txt",
+	
+	"remoteEnv": {
+		"BOOKKEEPING_CSV_PATH": "/workspace/data/Data",
+		"BOOKKEEPING_EXCEL_PATH": "/workspace/data/AI_Bookkeeping.xlsx"
+	},
+	
+	"forwardPorts": [8501, 5432],
+	"portsAttributes": {
+		"8501": {
+			"label": "Streamlit Dashboard",
+			"onAutoForward": "notify"
+		},
+		"5432": {
+			"label": "PostgreSQL",
+			"onAutoForward": "silent"
+		}
+	}
+}

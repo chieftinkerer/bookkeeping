@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug csv_to_raw.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}\\csv_to_raw.py",
+            "args": [
+                "--xlsx",
+                "C:\\Users\\james\\Digital Storage\\Personal - Documents\\Financials\\AI Bookkeeping\\AI_Bookkeeping.xlsx",
+                "--input",
+                "C:\\Users\\james\\Digital Storage\\Personal - Documents\\Financials\\AI Bookkeeping\\Data"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "justMyCode": true,
+            "stopOnEntry": false
+        },
+        {
+            "name": "Debug csv_to_raw.py (with dry-run)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}\\csv_to_raw.py",
+            "args": [
+                "--xlsx",
+                "C:\\Users\\james\\Digital Storage\\Personal - Documents\\Financials\\AI Bookkeeping\\AI_Bookkeeping.xlsx",
+                "--input",
+                "C:\\Users\\james\\Digital Storage\\Personal - Documents\\Financials\\AI Bookkeeping\\Data",
+                "--dry-run"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "justMyCode": true,
+            "stopOnEntry": false
+        }
+    ]
+}
