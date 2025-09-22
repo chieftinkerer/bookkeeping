@@ -12,11 +12,10 @@
    - Processing logs for audit trails
    - Duplicate detection and management
 
-2. **Database Utilities** (`database.py`)
-   - Connection pooling and management
-   - High-level transaction operations
-   - Vendor mapping operations
-   - Environment-based configuration
+2. **Database Package** (`database/`)
+   - SQLAlchemy ORM models and database operations
+   - Alembic migrations for schema versioning
+   - Organized as a Python package with proper imports
 
 3. **CSV Import Pipeline** (`csv_to_postgres.py`) 
    - Direct CSV-to-PostgreSQL import pipeline
@@ -61,10 +60,11 @@ cp .env.example .env
 ### 3. Setup Database
 ```bash
 # Create schema
-python database.py --create-schema
+# Initialize database with migrations
+python -m database --migrate
 
 # Test connection
-python database.py --test-connection
+python -m database --test-connection
 ```
 
 ### 4. Import CSV Data
@@ -160,8 +160,16 @@ CSV → csv_to_postgres.py → PostgreSQL → bookkeeping_helper_postgres.py →
 
 ```
 bookkeeping/
-├── db_schema.sql                    # Database schema
-├── database.py                      # Database utilities  
+├── database/                        # Database package
+│   ├── __init__.py                  # Package initialization
+│   ├── __main__.py                  # CLI interface
+│   ├── database.py                  # SQLAlchemy operations
+│   ├── models.py                    # ORM models
+│   ├── alembic.ini                  # Alembic configuration
+│   ├── alembic/                     # Migration environment
+│   │   ├── env.py                   # Migration setup
+│   │   └── versions/                # Migration scripts
+│   └── db_schema.sql.backup         # Backup of old schema  
 ├── csv_to_postgres.py              # CSV import to PostgreSQL
 ├── bookkeeping_helper_postgres.py   # AI categorization with PostgreSQL
 ├── mcp/                            # FastMCP server directory

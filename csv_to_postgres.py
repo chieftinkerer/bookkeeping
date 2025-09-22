@@ -441,7 +441,7 @@ def main():
     # Check if transactions table exists
     if not db.table_exists('transactions'):
         print("❌ Transactions table not found")
-        print("💡 Run: python database.py --create-schema")
+        print("💡 Run: python -m database --migrate")
         return 1
     
     # Clear transactions if requested

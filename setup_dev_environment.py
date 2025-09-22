@@ -74,7 +74,7 @@ def check_postgresql():
         print("✅ PostgreSQL client found")
         
         # Try to connect (this might fail if not configured)
-        print("💡 To test database connection later, run: python database.py")
+        print("💡 To test database connection later, run: python -m database")
     else:
         print("⚠️  PostgreSQL client not found")
         print("💡 Install PostgreSQL or connect to an existing instance")
@@ -101,8 +101,8 @@ def main():
     print("\n📋 Next steps:")
     print("1. Copy .env.example to .env and update database settings")
     print("2. Set up PostgreSQL database (local or remote)")
-    print("3. Run: python database.py --create-schema")
-    print("4. Run: python database.py --test-connection")
+    print("3. Run: python -m database --migrate")
+    print("4. Run: python -m database --test-connection")
     print("5. Start importing CSV data with: python csv_to_postgres.py")
     
     print("\n✨ Development environment setup complete!")

@@ -135,7 +135,7 @@ def main():
         print("🎉 Setup completed successfully!")
         print("\n📝 Next steps:")
         print("1. Edit .env with your database credentials")
-        print("2. Setup PostgreSQL database with: psql -f ../db_schema.sql")
+        print("2. Setup PostgreSQL database with: cd .. && python -m database --migrate")
         print("3. Start server with: python start_server.py")
     else:
         print("❌ Setup encountered some issues")

@@ -36,7 +36,8 @@ FastMCP-based server providing AI bookkeeping capabilities with PostgreSQL backe
    sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE bookkeeping TO bookkeeper;"
    
    # Initialize schema
-   psql -h localhost -U bookkeeper -d bookkeeping -f db_schema.sql
+   # From the project root
+   python -m database --migrate
    ```
 
 4. **Start Server**:

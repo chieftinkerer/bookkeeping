@@ -76,7 +76,7 @@ def get_project_root() -> Path:
 
 def get_schema_path() -> Path:
     """Get path to database schema file."""
-    return get_project_root() / "db_schema.sql"
+    return get_project_root() / "database" / "db_schema.sql"
 
 def get_env_file_path() -> Path:
     """Get path to .env file."""

@@ -149,8 +149,16 @@ tools = [
 bookkeeping/
 ├── .devcontainer/
 │   └── devcontainer.json           # VS Code devcontainer configuration
-├── database.py                     # PostgreSQL database utilities and operations
-├── db_schema.sql                   # Complete PostgreSQL database schema
+├── database/                       # Database package with SQLAlchemy ORM and Alembic migrations
+│   ├── __init__.py                 # Package initialization
+│   ├── __main__.py                 # Command-line interface
+│   ├── database.py                 # SQLAlchemy database operations  
+│   ├── models.py                   # SQLAlchemy ORM models
+│   ├── alembic.ini                 # Alembic configuration
+│   ├── alembic/                    # Alembic migration environment
+│   │   ├── env.py                  # Migration environment setup
+│   │   └── versions/               # Database migration scripts
+│   └── db_schema.sql.backup        # Backup of old SQL schema (deprecated)
 ├── csv_to_postgres.py              # Import & normalize CSV files to PostgreSQL
 ├── bookkeeping_helper_postgres.py  # AI categorization with PostgreSQL backend
 ├── config.py                       # Environment-aware path configuration
@@ -202,8 +210,8 @@ The repository includes a complete devcontainer configuration for development:
 ### 1. Setup Database
 ```bash
 # Setup PostgreSQL database
-python database.py --create-schema
-python database.py --test-connection
+python -m database --migrate
+python -m database --test-connection
 ```
 
 ### 2. Import CSV Files
@@ -307,7 +315,7 @@ All data operations maintain full audit trails and transaction integrity.
 
 1. **Install dependencies**: `pip install -r requirements.txt`
 2. **Setup PostgreSQL**: Configure database connection in `.env`  
-3. **Initialize database**: `python database.py --create-schema`
+3. **Initialize database**: `python -m database --migrate`
 4. **Import CSV data**: `python csv_to_postgres.py --input /path/to/csv/files`
 5. **Start MCP server**: `python mcp/start_server.py`
 6. **Connect AI client**: Use Claude Desktop or other MCP-compatible client
