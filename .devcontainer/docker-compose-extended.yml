@@ -1,0 +1,45 @@
+networks:
+  bookkeeping:
+    name: bookkeeping # Use a custom network name to avoid conflicts with other projects
+    driver: bridge
+
+services:
+  pgadmin:
+    environment:
+      PGADMIN_DEFAULT_EMAIL: james@alerra.io
+      PGADMIN_DEFAULT_PASSWORD: password
+    container_name: bookkeeping_pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - 8090:80
+    networks:
+      - bookkeeping
+
+  postgres:
+    container_name: bookkeeping_postgres
+    environment:
+      POSTGRES_DB: bookkeeiping
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    healthcheck:
+      interval: 10s
+      retries: 5
+      test:
+        - CMD-SHELL
+        - pg_isready -U postgres
+      timeout: 5s
+    image: postgres:17.2
+    ports:
+      - 5433:5432
+    networks:
+      - bookkeeping
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data   
+
+  
+volumes:
+  postgres_data:
+    driver: local
+  localstack_data:
+    driver: local

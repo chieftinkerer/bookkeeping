@@ -6,7 +6,7 @@
         "../..:/workspaces:cached",
         "deploy-app:/workspaces/deploy"
       ],
-      "networks": ["dev"],
+      "networks": ["bookkeeping"],
       "command": "sleep infinity",
       "extra_hosts": [
         "host.docker.internal:host-gateway"
@@ -17,5 +17,9 @@
     "deploy-app": {
       "driver": "local"
     }
-  }  
+  },
+
+  "include": [
+    "docker-compose-extended.yml"
+  ]
 }

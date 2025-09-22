@@ -3,65 +3,60 @@
 This repo contains a **local, privacy-friendly bookkeeping workflow** that combines:
 
 - **Manual CSV exports** from your bank/credit card accounts  
-- **Python scripts** to normalize, deduplicate, and import into Excel  
+- **Python scripts** to normalize, deduplicate, and import into PostgreSQL database
 - **OpenAI API** to automatically categorize expenses  
-- **Excel pivot tables & review sheets** for summaries and duplicate management  
+- **MCP Server** for AI chat interface and natural language queries
+- **PostgreSQL backend** for reliable data storage and concurrent access
 
 You keep **all data local** — only anonymized rows (Date, Description, Amount) are sent to the AI for categorization.
 
 ---
 
-## 🎯 NEXT PHASE: PostgreSQL + MCP Server Migration Plan
+## 🎯 Current Architecture (PostgreSQL + MCP Server)
 
-### Current Pain Points (Sept 20, 2025)
-- ❌ **Excel file locking** - can't access data while scripts run
-- ❌ **No AI chat interface** - want to query data naturally  
-- ❌ **Manual workflow** - want real-time interaction with financial data
+### System Features (Sept 22, 2025)
+- ✅ **PostgreSQL Backend** - reliable, concurrent database storage
+- ✅ **AI Chat Interface** - query data naturally through MCP server
+- ✅ **Real-time Interaction** - no file locking issues
 
-### 🏗️ Planned Architecture
+### 🏗️ Current Architecture
 ```
 CSV Files → PostgreSQL ← MCP Server ← Claude/AI Chat
                 ↓
-        Streamlit Dashboard (interactive charts)
+        Streamlit Dashboard (future)
                 +
-        Excel Export (on-demand reports)
+        Reports & Analytics (on-demand)
 ```
 
-### 📋 Implementation Roadmap
+### 📋 Available Features
 
-#### Phase 1: Database Migration
-- [ ] **PostgreSQL Setup**
-  - Create database schema for transactions
-  - Tables: `transactions`, `categories`, `vendor_mappings`, `processing_log`
-- [ ] **Data Migration**
-  - Migrate existing Excel data to PostgreSQL
-  - Preserve all 388+ transactions from Chase CSV
-- [ ] **Script Updates**
-  - Modify `csv_to_raw.py` to write to PostgreSQL instead of Excel
-  - Update `bookkeeping_helper.py` for database operations
+#### Database Operations
+- ✅ **PostgreSQL Setup** - Complete database schema
+- ✅ **CSV Import** - Direct CSV-to-PostgreSQL pipeline
+- ✅ **AI Categorization** - Automatic expense categorization
+- ✅ **Duplicate Detection** - Identify and handle duplicate transactions
 
-#### Phase 2: MCP Server
-- [ ] **MCP Server Creation**
-  - Tool: `query_transactions` - natural language queries
-  - Tool: `categorize_spending` - spending analysis
-  - Tool: `monthly_summary` - automated reporting  
-  - Tool: `find_duplicates` - duplicate detection
-  - Tool: `add_transaction` - manual entry
-  - Tool: `generate_chart` - create visualizations
+#### MCP Server & AI Chat
+- ✅ **Transaction Queries** - Natural language transaction searches
+- ✅ **Spending Analysis** - Category breakdowns and trends
+- ✅ **Monthly Summaries** - Automated reporting  
+- ✅ **Duplicate Management** - Find and handle duplicates
+- ✅ **Manual Entry** - Add transactions directly
+- ✅ **Database Management** - Category and vendor mapping tools
 - [ ] **AI Chat Interface**
   - Enable queries like: *"How much did I spend on groceries in August?"*
   - Support commands: *"Show me a chart of dining vs grocery spending"*
   - Generate insights: *"What are my top 5 expense categories?"*
 
-#### Phase 3: Visualization & Reporting
+#### Future Features
 - [ ] **Streamlit Dashboard**
   - Interactive charts and graphs
   - Filtering by date, category, amount
   - Trend analysis and comparisons
-- [ ] **Excel Export**
-  - On-demand Excel reports with charts
-  - Preserve familiar reporting format
-  - Automated monthly/quarterly exports
+- [ ] **Advanced Reporting**
+  - Automated monthly/quarterly reports
+  - Custom analytics and insights
+  - Export capabilities (CSV, PDF)
 
 ### 🛠️ Technical Requirements
 
@@ -128,31 +123,16 @@ tools = [
 ]
 ```
 
-### 🔄 Migration Strategy
-
-#### Step 1: Parallel Systems
-1. Keep existing Excel workflow working
-2. Build PostgreSQL system alongside
-3. Validate data consistency between both
-
-#### Step 2: Gradual Migration  
-1. New CSV imports go to PostgreSQL
-2. Historical data migrated in batches
-3. Excel becomes export-only
-
-#### Step 3: Full Migration
-1. MCP server operational
-2. Streamlit dashboard deployed
-3. Excel workflow deprecated
-
-### 📊 Expected Benefits
+### � Current System Benefits
 
 #### Solved Problems
 - ✅ **No file locking** - concurrent access to data
-- ✅ **Real-time queries** - chat with your financial data
-- ✅ **Better performance** - handles 10k+ transactions easily
-- ✅ **Advanced analytics** - complex SQL queries
-- ✅ **Automated processing** - background CSV imports
+- ✅ **Real-time queries** - chat with your financial data through MCP server
+- ✅ **Better performance** - PostgreSQL handles large datasets efficiently
+- ✅ **Advanced analytics** - complex SQL queries and aggregations
+- ✅ **Automated processing** - background CSV imports and AI categorization
+- ✅ **Data integrity** - ACID compliance and transaction safety
+- ✅ **AI integration** - Natural language interface to your financial data
 
 #### New Capabilities
 - 🤖 **AI Chat**: *"Show me unusual spending patterns this month"*
@@ -168,13 +148,18 @@ tools = [
 ```
 bookkeeping/
 ├── .devcontainer/
-│   └── devcontainer.json           # VS Code devcontainer configuration with volume mounts
-├── bookkeeping_helper.py           # Call OpenAI API to categorize transactions & build summary
-├── build_dup_review.py             # Generate a Dup Review sheet for spotting potential duplicates
-├── cleanup_dupes.py                # Move rows marked Delete → Deleted Rows, remove from Raw Data
-├── config.py                       # Environment-aware path configuration for CSV/Excel files
-├── csv_to_raw.py                   # Import & normalize manually downloaded CSVs
-├── DEVELOPMENT_LOG.md              # Technical fixes and current status
+│   └── devcontainer.json           # VS Code devcontainer configuration
+├── database.py                     # PostgreSQL database utilities and operations
+├── db_schema.sql                   # Complete PostgreSQL database schema
+├── csv_to_postgres.py              # Import & normalize CSV files to PostgreSQL
+├── bookkeeping_helper_postgres.py  # AI categorization with PostgreSQL backend
+├── config.py                       # Environment-aware path configuration
+├── mcp/                            # FastMCP server implementation
+│   ├── server.py                   # Main MCP server
+│   ├── tools/                      # MCP tool modules
+│   └── utils/                      # Database and utility modules
+├── DEVELOPMENT_LOG.md              # Technical development history
+├── MIGRATION_COMPLETE.md           # Migration completion documentation
 ├── README.md                       # This file
 ├── s3_backup_sync.sh               # S3 backup script
 ├── S3_README.md                    # S3 configuration documentation
@@ -182,13 +167,9 @@ bookkeeping/
 └── s3_secure_setup.py              # S3 secure bucket setup
 ```
 
-**Current Data Location (Windows Host):**
-- Excel workbook: `C:\Users\james\Digital Storage\Personal - Documents\Financials\AI Bookkeeping\AI_Bookkeeping.xlsx`
-- CSV files: `C:\Users\james\Digital Storage\Personal - Documents\Financials\AI Bookkeeping\Data`
-
-**Data Location in Devcontainer:**
-- Excel workbook: `/workspace/data/AI_Bookkeeping.xlsx`
-- CSV files: `/workspace/data/Data`
+**Current Data Storage:**
+- PostgreSQL database (configurable connection)
+- CSV files: Input directory for transaction imports
 - Auto-detected via `config.py` path resolution
 
 ---
@@ -206,134 +187,132 @@ The repository includes a complete devcontainer configuration for development:
 
 ### Getting Started
 1. Open this repository in VS Code
-2. When prompted, click "Reopen in Container"
-3. Your CSV files will be automatically mounted at `/workspace/data/Data`
-4. Scripts will automatically detect the container environment
-
-### Container Commands
-```bash
-# Test data access
-python -c "from config import get_data_paths; print(get_data_paths())"
-
-# Import CSVs (uses mounted data)
-python csv_to_raw.py --input /workspace/data/Data --excel /workspace/data/AI_Bookkeeping.xlsx
-
-# Categorize with AI
-python bookkeeping_helper.py --file /workspace/data/AI_Bookkeeping.xlsx
-```
-
 ---
 
-## 🛠 Prerequisites for Migration
+## 🛠 Prerequisites
 
 - Python 3.9+
 - PostgreSQL 13+
-- Dependencies: `pandas`, `psycopg2`, `streamlit`, `plotly`, `mcp`
-
-```bash
-pip install pandas psycopg2-binary streamlit plotly requests python-dateutil openpyxl
-```
+- Dependencies installed via: `pip install -r requirements.txt`
 
 ---
 
-## 🚀 Current Working Workflow (Pre-Migration)
+## 🚀 Current Working Workflow (PostgreSQL + MCP)
 
-### 1. Export CSVs from your accounts
-- Log into each bank/credit card portal (about 10 accounts, or as many as you have).
-- Download CSV statements (monthly or quarterly).
-- Save them into `C:\Users\james\Digital Storage\Personal - Documents\Financials\AI Bookkeeping\Data`.
-
-### 2. Load CSVs into Excel
-
+### 1. Setup Database
 ```bash
-python csv_to_raw.py --xlsx "C:\Users\james\Digital Storage\Personal - Documents\Financials\AI Bookkeeping\AI_Bookkeeping.xlsx" --input "C:\Users\james\Digital Storage\Personal - Documents\Financials\AI Bookkeeping\Data"
+# Setup PostgreSQL database
+python database.py --create-schema
+python database.py --test-connection
 ```
 
-This script:
-- Normalizes different CSV formats → unified columns:
-  `Date, Description, Amount, Source, TxnId, Reference, Time, Account, Balance`
-- Computes a **content hash** per row (`OriginalHash`)
-- Tags rows with **PossibleDupGroup** if they share Date + Description + Amount
-- Appends rows into the **Raw Data** sheet of your workbook
-- Applies **strong dedupe** rules (TxnId > Reference+Date+Amount > Hash)
-
-Options:
-- `--since YYYY-MM-DD` → skip older rows  
-- `--clear-raw` → start Raw Data fresh  
-- `--recursive` → scan subfolders for CSVs  
-
----
-
-### 3. Categorize with AI
-
+### 2. Import CSV Files
 ```bash
-python bookkeeping_helper.py --file "C:\Users\james\Digital Storage\Personal - Documents\Financials\AI Bookkeeping\AI_Bookkeeping.xlsx"
+# Import CSV transaction files directly to PostgreSQL
+python csv_to_postgres.py --input /path/to/csv/files
+
+# Options:
+# --since YYYY-MM-DD    Skip older transactions
+# --recursive           Scan subfolders for CSVs
+# --dry-run            Test without inserting data
 ```
 
 This script:
-- Looks at **Raw Data**
-- Skips rows already categorized (using `RowHash`)
-- Applies any **VendorMap** rules you maintain in the workbook
-- Sends uncategorized rows to the **OpenAI Responses API**
-- Writes results to **Clean Data** with:
-  - Vendor (cleaned name)
-  - Suggested Category
-  - Notes
-- Builds a **Summary** pivot: monthly totals by category
+- Normalizes different CSV formats into unified columns
+- Computes content hashes for deduplication
+- Applies strong deduplication rules automatically
+- Stores transactions in PostgreSQL with full audit trail
 
-Options:
-- `--batch 150` → adjust rows per API call  
-- `--model gpt-4.1-mini` (default) or upgrade to `gpt-4.1`  
-- `--dry-run` → test without calling API  
-
----
-
-### 4. Review possible duplicates
-
+### 3. AI Categorization
 ```bash
-python build_dup_review.py --file "C:\Users\james\Digital Storage\Personal - Documents\Financials\AI Bookkeeping\AI_Bookkeeping.xlsx"
+# Automatically categorize uncategorized transactions
+python bookkeeping_helper_postgres.py
+
+# Options:
+# --batch 150          Adjust rows per API call
+# --model gpt-4.1-mini Set AI model to use
+# --dry-run           Test without updating database
 ```
 
 This script:
-- Scans **Raw Data**
-- Groups rows by **PossibleDupGroup**
-- Creates/updates a **Dup Review** sheet:
-  - `Decision` (blank — fill in `Keep`, `Delete`, or `Investigate`)
-  - `Reason` (notes for why you chose that action)
-  - GroupCount (≥2 = potential duplicates)
-- Sorts so groups with multiples float to the top
+- Identifies uncategorized transactions
+- Applies vendor mapping rules automatically
+- Uses OpenAI API for intelligent categorization
+- Updates database with categories and cleaned vendor names
 
----
-
-### 5. Clean up duplicates
-
-In Excel → set `Decision = Delete` for true dupes.
-
-Then run:
-
+### 4. AI Chat Interface
 ```bash
-python cleanup_dupes.py --file "C:\Users\james\Digital Storage\Personal - Documents\Financials\AI Bookkeeping\AI_Bookkeeping.xlsx"
+# Start the MCP server for AI chat
+python mcp/start_server.py
 ```
 
-This script:
-- Finds rows marked `Delete` in **Dup Review**
-- Moves them to a new **Deleted Rows** sheet (audit trail)
-  - Adds `DeletedAt` timestamp
-  - Adds `SourceSheet` = "Raw Data"
-- Rewrites Raw Data without those rows
+Connect your AI client to query your data naturally:
+- *"How much did I spend on groceries last month?"*
+- *"Show me my top 5 expense categories this year"*
+- *"Find any duplicate transactions"*
+- *"Add a $50 grocery transaction from Whole Foods"*
 
-You keep a full audit trail — nothing is lost permanently.
+### 5. Database Management
+Use the MCP server tools or direct SQL queries:
+- Query transactions with flexible filters
+- Analyze spending patterns and trends
+- Manage categories and vendor mappings
+- Generate monthly and yearly summaries
+
+### 6. Duplicate Review & Management
+Instead of Excel sheets, use MCP tools for duplicate review:
+
+```bash
+# Find and stage potential duplicates for review
+# This replaces the Excel "Dup Review" sheet
+AI: "Stage duplicates for review from the last 30 days"
+
+# Review the duplicate queue
+AI: "Show me the duplicate review queue"
+
+# Make decisions on duplicates
+AI: "Review duplicate group DUP_0001, delete the duplicate and keep transaction 123"
+AI: "Review duplicate group DUP_0002, keep both transactions as they're not duplicates"
+```
+
+### 7. Vendor Mapping & Categorization Review
+Manage uncategorized transactions and vendor mappings:
+
+```bash
+# Find uncategorized transactions that need attention
+AI: "Show me uncategorized transactions"
+
+# Get suggestions for vendor mappings
+AI: "Give me vendor mapping suggestions"
+
+# Create vendor mapping rules
+AI: "Create a vendor mapping for Starbucks to map to Dining category"
+```
 
 ---
 
-## 📊 Excel Sheets Overview
+## 📊 Database Schema Overview
 
-- **Raw Data** → unified imports, deduped, with all metadata  
-- **Clean Data** → AI-categorized transactions  
-- **Summary** → pivot of monthly spend by category  
-- **VendorMap** → manual vendor → category rules (applied before AI)  
-- **Dup Review** → potential duplicates, review and mark Decision  
-- **Deleted Rows** → audit trail of rows you removed  
+- **transactions** → All transaction data with deduplication support
+- **duplicate_review** → Staging area for manual duplicate review decisions
+- **categories** → Spending categories with descriptions  
+- **vendor_mappings** → Automatic categorization rules
+- **processing_log** → Complete audit trail of all operations
+
+All data operations maintain full audit trails and transaction integrity.
+
+---
+
+## 🎯 Getting Started
+
+1. **Install dependencies**: `pip install -r requirements.txt`
+2. **Setup PostgreSQL**: Configure database connection in `.env`  
+3. **Initialize database**: `python database.py --create-schema`
+4. **Import CSV data**: `python csv_to_postgres.py --input /path/to/csv/files`
+5. **Start MCP server**: `python mcp/start_server.py`
+6. **Connect AI client**: Use Claude Desktop or other MCP-compatible client
+
+---  
 
 ---
 
@@ -382,36 +361,32 @@ python cleanup_dupes.py --file "C:\Users\james\Digital Storage\Personal - Docume
 1. **Setup PostgreSQL** in devcontainer
 2. **Create database schema** from design above
 3. **Build data migration script** (Excel → PostgreSQL)
-4. **Create basic MCP server** with core tools
-5. **Test MCP integration** with Claude
-6. **Build Streamlit dashboard** prototype
-7. **Implement Excel export** functionality
-
 ---
 
-## 💡 Tips for Development
+## 💡 Development Tips
 
-- **Test with small data sets** before migrating all 388 transactions
-- **Keep Excel backup** during transition period  
-- **Use transaction-safe imports** to prevent data loss
+- **Test with small data sets** when trying new features
+- **Use database transactions** to ensure data integrity
 - **Implement comprehensive logging** for debugging
-- **Design for extensibility** - more banks, more features
+- **Regular backups** of PostgreSQL database
+- **Monitor MCP server logs** for AI chat interactions
 
 ---
 
 ## 🔒 Security & Privacy Notes
 
 - All data processing remains local
-- Only anonymized transaction data sent to OpenAI
-- PostgreSQL credentials stored in environment variables
+- Only anonymized transaction data sent to OpenAI for categorization
+- PostgreSQL credentials stored securely in environment variables
 - MCP server runs locally, no external data transmission
-- Excel exports contain full financial data (handle securely)
+- Full audit trail maintained for all operations
 
 ---
 
 ## 📝 References
 
 - [Model Context Protocol Documentation](https://spec.modelcontextprotocol.io/)
-- [Streamlit Financial Dashboard Examples](https://streamlit.io/)
+- [FastMCP Framework](https://github.com/jlowin/fastmcp)
 - [PostgreSQL Financial Data Best Practices](https://www.postgresql.org/)
-- Original requirements captured in `DEVELOPMENT_LOG.md`
+- Development history in `DEVELOPMENT_LOG.md`
+- Migration details in `MIGRATION_COMPLETE.md`
